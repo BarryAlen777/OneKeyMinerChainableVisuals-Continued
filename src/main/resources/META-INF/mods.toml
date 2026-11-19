@@ -1,0 +1,34 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+credits="Original author (原作者): mai_xiyu (OneKeyMiner)"
+authors="BarryAlen777"
+# Client-only addon: never apply a server-side version check against the (optional) main mod.
+# displayTest is a MOD-level key - Forge ignores it inside [[dependencies.*]] (audit report
+# issue 1 / P1, r12 had it in the wrong block where it did nothing).
+displayTest="IGNORE_SERVER_VERSION"
+description='''OCV: Continued —— 提供连锁目标高亮、白色粒子连线、计数 HUD 与本地音效提示的客户端可视化附属。检测到 OneKeyMiner 主模组时直接显示其真实连锁预览范围；未安装主模组时回退到本地同类方块预判。'''
+[[dependencies.${mod_id}]]
+modId="onekeyminer"
+mandatory=false
+# The range deliberately stays [0,) so an older OneKeyMiner blocks nothing; when the preview
+# API (1.6.8+) is missing we say so in chat once and use the local scanner (ClientSetup).
+versionRange="[0,)"
+ordering="AFTER"
+side="CLIENT"
+[[dependencies.${mod_id}]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.${mod_id}]]
+modId="minecraft"
+mandatory=true
+versionRange="[${minecraft_version}]"
+ordering="NONE"
+side="BOTH"

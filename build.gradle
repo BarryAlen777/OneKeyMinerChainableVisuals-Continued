@@ -1,0 +1,32 @@
+plugins { id 'java'; id 'net.minecraftforge.gradle' version '[6.0,6.2)' }
+version = '1.0.0-r24'
+group = 'cn.blockforge.generated.modad7bbe58'
+base { archivesName = 'OCV-Continued' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+minecraft { mappings channel: 'official', version: '1.20.1' }
+dependencies { minecraft 'net.minecraftforge:forge:1.20.1-47.4.0' }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+processResources {
+    def props = [mod_id: 'onekeyminer_chainable_visuals', mod_name: '连锁可视化续作', mod_version: project.version,
+                 minecraft_version: '1.20.1', forge_version: '47.4.0']
+    inputs.properties props
+    filteringCharset = 'UTF-8'
+    filesMatching('META-INF/mods.toml') { expand props }
+}
+jar.finalizedBy('reobfJar')
+
+// Plain-JVM regression tests (src/test/java): PackedPos / LongSet / FloodFillCore, wired in
+// because the r15 audit report issue 3 caught that the promised PackedPosTest never existed.
+// No JUnit on purpose - the shared offline build cache has no test-framework artifacts, and
+// the three test targets deliberately touch zero Minecraft classes, so a bare java run of
+// RegressionTests is the most robust harness there is. The framework-based `test` task is
+// switched off; `runRegressionTests` plays that role and `build` fails if any check breaks.
+tasks.named('test') { onlyIf { false } }
+tasks.register('runRegressionTests', JavaExec) {
+    group = 'verification'
+    description = 'Runs the Minecraft-free regression suites'
+    dependsOn 'compileTestJava'
+    classpath = sourceSets.test.output + sourceSets.main.output
+    mainClass = 'cn.blockforge.generated.modad7bbe58.client.RegressionTests'
+}
+check.dependsOn 'runRegressionTests'
